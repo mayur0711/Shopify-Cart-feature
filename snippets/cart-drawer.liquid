@@ -173,9 +173,7 @@
                             </div>
                           {%- else -%}
                             <div class="product-option">
-                              <span class="visually-hidden">
-                                {{ 'products.product.price.regular_price' | t }}
-                              </span>
+                              
                               <s class="cart-item__old-price product-option">
                                 {{- item.original_price | money -}}
                               </s>
@@ -256,12 +254,13 @@
                                 <span class="visually-hidden">
                                   {{ 'products.product.price.sale_price' | t }}
                                 </span>
-                                <span class="price price--end">
+                                {% comment %} <span class="price price--end">
                                   {{ item.final_line_price | money }}
-                                </span>
+                                </span> {% endcomment %}
                               </div>
                             {%- else -%}
                               <span class="price price--end">
+                                
                                 {{ item.original_line_price | money }}
                               </span>
                             {%- endif -%}
