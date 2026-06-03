@@ -124,7 +124,7 @@
     "cart_type": "drawer",
     "show_vendor": false,
     "show_cart_note": true,
-    "show_cart_saving": false,
+    "show_cart_saving": true,
     "free_shipping_threshold": 150,
     "cart_drawer_collection": "hydrogen",
     "cart_color_scheme": "scheme-1",
