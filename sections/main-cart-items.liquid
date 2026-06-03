@@ -126,6 +126,9 @@
                           </strong>
                         </div>
                       {%- else -%}
+                        <s class="cart-item__old-price price">
+                          {{ item.variant.compare_at_price | money }}
+                        </s>                          
                         <div class="product-option">
                           {{ item.original_price | money }}
                         </div>
