@@ -505,7 +505,9 @@
 
         <!-- Start blocks -->
         {% comment %}  Cart Saving Code render  {% endcomment %}
+         {% if settings.show_cart_saving %}
         {% render 'cart-savings' %}
+        {% endif %}
 
         
         <!-- Subtotals -->
