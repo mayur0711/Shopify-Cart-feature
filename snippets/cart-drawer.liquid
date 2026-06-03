@@ -498,6 +498,10 @@
         {%- endif -%}
 
         <!-- Start blocks -->
+        {% comment %}  Cart Saving Code render  {% endcomment %}
+        {% render 'cart-savings' %}
+
+        
         <!-- Subtotals -->
 
         <div class="cart-drawer__footer" {{ block.shopify_attributes }}>

@@ -3810,3 +3810,27 @@ details-disclosure > details {
     transition: none;
   }
 }
+
+
+/* Cart savings css start*/
+.cart-savings-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 12px 14px;
+  background: #ecfdf5;
+  border: 1px solid #22c55e;
+  border-radius: 8px;
+  color: #166534;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cart-savings-icon {
+  font-size: 18px;
+}
+
+.cart-savings-text {
+  line-height: 1.4;
+}
