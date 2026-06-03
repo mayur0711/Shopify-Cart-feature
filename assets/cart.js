@@ -295,3 +295,37 @@ if (!customElements.get('cart-note')) {
     }
   );
 }
+
+
+// Custom Cart feature scripts start here
+
+function updateFreeShippingBar() {
+  const bars = document.querySelectorAll('.free-shipping-bar');
+
+  if (!bars.length) return;
+
+  fetch(`${routes.cart_url}.js`)
+    .then(response => response.json())
+    .then(cart => {
+      bars.forEach(bar => {
+        const threshold = Number(bar.dataset.freeShippingThreshold);
+        const cartTotal = cart.total_price;
+        const amountLeft = threshold - cartTotal;
+        const progress = Math.min((cartTotal / threshold) * 100, 100);
+
+        const message = bar.querySelector('.free-shipping-message');
+        const progressBar = bar.querySelector('.free-shipping-progress');
+
+        if (amountLeft > 0) {
+          message.textContent = `Spend ${Shopify.formatMoney(amountLeft)} more to get FREE shipping!`;
+        } else {
+          message.textContent = 'Congratulations! You unlocked FREE shipping.';
+        }
+
+        progressBar.style.width = `${progress}%`;
+      });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', updateFreeShippingBar);
+document.addEventListener('cart:updated', updateFreeShippingBar);
