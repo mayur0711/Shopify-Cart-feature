@@ -254,13 +254,15 @@
                                 <span class="visually-hidden">
                                   {{ 'products.product.price.sale_price' | t }}
                                 </span>
-                                {% comment %} <span class="price price--end">
+                                <span class="price price--end">
                                   {{ item.final_line_price | money }}
-                                </span> {% endcomment %}
+                                </span>
                               </div>
                             {%- else -%}
                               <span class="price price--end">
-                                
+                                 <span class="price price--end">
+                                  {{ item.final_line_price | money }}
+                                </span>
                                 {{ item.original_line_price | money }}
                               </span>
                             {%- endif -%}
