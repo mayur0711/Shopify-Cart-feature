@@ -260,9 +260,7 @@
                               </div>
                             {%- else -%}
                               <span class="price price--end">
-                                 <span class="price price--end">
-                                  {{ item.final_line_price | money }}
-                                </span>
+                                 {{ item.final_line_price | money }}
                                 {{ item.original_line_price | money }}
                               </span>
                             {%- endif -%}
