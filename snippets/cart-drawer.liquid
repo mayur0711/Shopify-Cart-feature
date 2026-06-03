@@ -173,6 +173,11 @@
                             </div>
                           {%- else -%}
                             <div class="product-option">
+
+                              <span class="visually-hidden">
+                                {{ 'products.product.price.sale_price' | t }}
+                              </span>
+                              
                               {{ item.original_price | money }}
                             </div>
                           {%- endif -%}
