@@ -125,7 +125,7 @@
     "show_vendor": false,
     "show_cart_note": false,
     "free_shipping_threshold": 150,
-    "cart_drawer_collection": "",
+    "cart_drawer_collection": "hydrogen",
     "cart_color_scheme": "scheme-1",
     "sections": {
       "main-password-header": {
