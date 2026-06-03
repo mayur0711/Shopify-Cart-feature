@@ -57,6 +57,15 @@
         }
       }
     },
+    "cart": {
+      "settings": {
+        "show_cart_saving": {
+          "label": "Enable Cart Savings"
+        }
+      }
+    }
+  },
+    
     "collection_cards": {
       "name": "Collection cards",
       "settings": {
@@ -3241,6 +3250,7 @@
           }
         }
       },
+      
       "blocks": {
         "collapsible_row": {
           "name": "Collapsible row",
