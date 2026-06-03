@@ -1449,6 +1449,100 @@
       },
       {
         "type": "header",
+        "content": "Eligible discount codes"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_eligible_discount_codes",
+        "label": "Show eligible discount codes in cart drawer",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_code_1",
+        "label": "Discount code 1",
+        "default": "FIRST10"
+      },
+      {
+        "type": "number",
+        "id": "eligible_discount_minimum_1",
+        "label": "Minimum cart amount for discount code 1",
+        "default": 100
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_description_1",
+        "label": "Discount code 1 description",
+        "default": "10% off orders over 100"
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_code_2",
+        "label": "Discount code 2",
+        "default": "FIRST20"
+      },
+      {
+        "type": "number",
+        "id": "eligible_discount_minimum_2",
+        "label": "Minimum cart amount for discount code 2",
+        "default": 200
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_description_2",
+        "label": "Discount code 2 description",
+        "default": "20% off orders over 200"
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_code_3",
+        "label": "Discount code 3"
+      },
+      {
+        "type": "number",
+        "id": "eligible_discount_minimum_3",
+        "label": "Minimum cart amount for discount code 3",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_description_3",
+        "label": "Discount code 3 description"
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_code_4",
+        "label": "Discount code 4"
+      },
+      {
+        "type": "number",
+        "id": "eligible_discount_minimum_4",
+        "label": "Minimum cart amount for discount code 4",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_description_4",
+        "label": "Discount code 4 description"
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_code_5",
+        "label": "Discount code 5"
+      },
+      {
+        "type": "number",
+        "id": "eligible_discount_minimum_5",
+        "label": "Minimum cart amount for discount code 5",
+        "default": 0
+      },
+      {
+        "type": "text",
+        "id": "eligible_discount_description_5",
+        "label": "Discount code 5 description"
+      },
+      {
+        "type": "header",
         "content": "t:settings_schema.cart.settings.cart_drawer.header"
       },
       {

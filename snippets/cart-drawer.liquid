@@ -504,6 +504,9 @@
         {%- endif -%}
 
         <!-- Start blocks -->
+        {% comment %} Eligible discount codes render {% endcomment %}
+        {% render 'eligible-discount-codes' %}
+
         {% comment %}  Cart Saving Code render  {% endcomment %}
         {% render 'cart-savings' %}
 

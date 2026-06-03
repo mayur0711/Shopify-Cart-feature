@@ -1,0 +1,48 @@
+{% if settings.show_eligible_discount_codes and cart.item_count > 0 %}
+  {% capture eligible_discount_codes %}
+    {% for discount_index in (1..5) %}
+      {% liquid
+        assign code_key = 'eligible_discount_code_' | append: discount_index
+        assign minimum_key = 'eligible_discount_minimum_' | append: discount_index
+        assign description_key = 'eligible_discount_description_' | append: discount_index
+        assign discount_code = settings[code_key] | strip
+        assign discount_minimum = settings[minimum_key] | default: 0 | times: 100 | round
+        assign discount_description = settings[description_key] | strip
+      %}
+
+      {% if discount_code != blank and discount_minimum > 0 and cart.total_price >= discount_minimum %}
+        <li class="eligible-discounts__item">
+          <button
+            class="eligible-discounts__code"
+            type="button"
+            data-discount-code="{{ discount_code | escape }}"
+            aria-label="Copy discount code {{ discount_code | escape }}"
+          >
+            {{ discount_code | escape }}
+          </button>
+          <span class="eligible-discounts__meta">
+            {% if discount_description != blank %}
+              {{ discount_description | escape }}
+            {% else %}
+              Eligible at {{ discount_minimum | money }}
+            {% endif %}
+          </span>
+        </li>
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+  {% liquid
+    assign eligible_discount_codes = eligible_discount_codes | strip
+  %}
+
+  {% if eligible_discount_codes != blank %}
+    <div class="eligible-discounts" aria-live="polite">
+      <p class="eligible-discounts__eyebrow">Unlocked coupon</p>
+      <p class="eligible-discounts__title">You qualify for these codes</p>
+      <ul class="eligible-discounts__list list-unstyled" role="list">
+        {{ eligible_discount_codes }}
+      </ul>
+      <p class="eligible-discounts__hint">Click a code to copy it, then paste it at checkout.</p>
+    </div>
+  {% endif %}
+{% endif %}

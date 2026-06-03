@@ -423,3 +423,60 @@ if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
   // Re-render using the cart data passed by the event.
   subscribe(PUB_SUB_EVENTS.cartUpdate, (event) => updateFreeShippingBar(event?.cartData));
 }
+
+// Copies text using the modern Clipboard API with a textarea fallback.
+function copyTextToClipboard(text) {
+  // Use the Clipboard API when the browser allows it.
+  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
+
+  // Create a temporary textarea for older browsers.
+  const textarea = document.createElement('textarea');
+  // Put the requested text into the temporary textarea.
+  textarea.value = text;
+  // Keep the textarea off-screen so it does not visually affect the page.
+  textarea.style.position = 'fixed';
+  // Move it above the viewport to avoid scroll jumps.
+  textarea.style.top = '-1000px';
+  // Add the textarea to the page so the browser can select its value.
+  document.body.appendChild(textarea);
+  // Select the text that needs to be copied.
+  textarea.select();
+  // Copy the selected text into the clipboard.
+  document.execCommand('copy');
+  // Remove the temporary textarea after copying.
+  textarea.remove();
+
+  return Promise.resolve();
+}
+
+// Copies eligible discount codes from the cart drawer without needing to rebind after drawer updates.
+document.addEventListener('click', async (event) => {
+  // Only handle clicks on eligible discount code buttons.
+  const discountButton = event.target.closest('[data-discount-code]');
+  // Stop if the click was not on a discount code.
+  if (!discountButton) return;
+
+  // Read the code from the button data attribute.
+  const discountCode = discountButton.dataset.discountCode;
+  // Stop if the button does not have a usable code.
+  if (!discountCode) return;
+
+  try {
+    // Copy the discount code before showing copied feedback.
+    await copyTextToClipboard(discountCode);
+  } catch (error) {
+    // Log copy failures without blocking the cart drawer.
+    console.warn(error);
+    return;
+  }
+
+  // Mark the clicked code as copied for visual feedback.
+  discountButton.classList.add('is-copied');
+  // Temporarily change the button text so the customer knows the code was copied.
+  discountButton.textContent = 'Copied';
+  // Restore the original code after a short confirmation delay.
+  setTimeout(() => {
+    discountButton.classList.remove('is-copied');
+    discountButton.textContent = discountCode;
+  }, 1600);
+});
