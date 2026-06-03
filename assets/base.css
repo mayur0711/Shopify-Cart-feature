@@ -3622,6 +3622,10 @@ details-disclosure > details {
   position: relative;
 }
 
+.free-shipping-bar[hidden] {
+  display: none;
+}
+
 .free-shipping-bar::before {
   content: "";
   position: absolute;
