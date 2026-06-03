@@ -259,10 +259,10 @@
                                 </span> {% endcomment %}
                               </div>
                             {%- else -%}
-                              {% comment %} <span class="price price--end">
+                              <span class="price price--end">
                                 
                                 {{ item.original_line_price | money }}
-                              </span> {% endcomment %}
+                              </span>
                             {%- endif -%}
 
                             {%- if item.variant.available and item.unit_price_measurement -%}
