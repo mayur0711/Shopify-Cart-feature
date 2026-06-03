@@ -1435,6 +1435,13 @@
         "default": false
       },
       {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping target",
+        "info": "Enter the order amount in your store currency. Example: 100 means free shipping starts at 100.00.",
+        "default": 100
+      },
+      {
         "type": "header",
         "content": "t:settings_schema.cart.settings.cart_drawer.header"
       },

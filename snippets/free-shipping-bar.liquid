@@ -1,16 +1,21 @@
 {% liquid
-  assign free_shipping_threshold = 10000
+  assign free_shipping_target = settings.free_shipping_threshold | default: 100
+  assign free_shipping_threshold = free_shipping_target | times: 100 | round
   assign cart_total = cart.total_price
   assign amount_left = free_shipping_threshold | minus: cart_total
-  assign progress = cart_total | times: 100 | divided_by: free_shipping_threshold | at_most: 100
+  assign progress = 0
   assign is_complete = false
+
+  if free_shipping_threshold > 0
+    assign progress = cart_total | times: 100 | divided_by: free_shipping_threshold | at_most: 100
+  endif
 
   if amount_left <= 0
     assign is_complete = true
   endif
 %}
 
-{% if cart.item_count > 0 %}
+{% if cart.item_count > 0 and free_shipping_threshold > 0 %}
   <div
     class="free-shipping-bar{% if is_complete %} is-complete{% endif %}"
     data-free-shipping-threshold="{{ free_shipping_threshold }}"
