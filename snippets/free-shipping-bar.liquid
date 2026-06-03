@@ -1,28 +1,62 @@
-{% assign free_shipping_threshold = 10000 %}
-{% assign cart_total = cart.total_price %}
-{% assign amount_left = free_shipping_threshold | minus: cart_total %}
-{% assign progress = cart_total | times: 100 | divided_by: free_shipping_threshold | at_most: 100 %}
+{% liquid
+  assign free_shipping_threshold = 10000
+  assign cart_total = cart.total_price
+  assign amount_left = free_shipping_threshold | minus: cart_total
+  assign progress = cart_total | times: 100 | divided_by: free_shipping_threshold | at_most: 100
+  assign is_complete = false
+
+  if amount_left <= 0
+    assign is_complete = true
+  endif
+%}
 
 {% if cart.item_count > 0 %}
   <div
-    class="free-shipping-bar"
+    class="free-shipping-bar{% if is_complete %} is-complete{% endif %}"
     data-free-shipping-threshold="{{ free_shipping_threshold }}"
+    data-free-shipping-currency="{{ cart.currency.iso_code }}"
+    style="--free-shipping-progress: {{ progress }}%;"
   >
-    <div class="free-shipping-top">
-      <p class="free-shipping-message">
-        {% if amount_left > 0 %}
-          Add {{ amount_left | money }} more for FREE shipping
-        {% else %}
-          🎉 You unlocked FREE shipping!
-        {% endif %}
-      </p>
+    <div class="free-shipping-icon" aria-hidden="true">
+      <span class="svg-wrapper free-shipping-icon__truck">
+        {{- 'icon-truck.svg' | inline_asset_content -}}
+      </span>
+      <span class="svg-wrapper free-shipping-icon__check">
+        {{- 'icon-checkmark.svg' | inline_asset_content -}}
+      </span>
     </div>
 
-    <div class="free-shipping-track">
+    <div class="free-shipping-content">
+      <p class="free-shipping-message" aria-live="polite">
+        {% if amount_left > 0 %}
+          <span class="free-shipping-emphasis">You're {{ amount_left | money }} away</span> from free shipping
+        {% else %}
+          <span class="free-shipping-emphasis">Free shipping unlocked</span> for this order
+        {% endif %}
+      </p>
+      <p class="free-shipping-detail">
+        {% if amount_left > 0 %}
+          Add one more favorite and we will cover delivery.
+        {% else %}
+          Your order is ready to ship on us.
+        {% endif %}
+      </p>
+
       <div
-        class="free-shipping-progress {% if amount_left <= 0 %}is-complete{% endif %}"
-        style="width: {{ progress }}%;"
-      ></div>
+        class="free-shipping-track"
+        role="progressbar"
+        aria-label="Free shipping progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="{{ progress }}"
+      >
+        <div class="free-shipping-progress"></div>
+        <span class="free-shipping-marker" aria-hidden="true">
+          <span class="svg-wrapper">
+            {{- 'icon-truck.svg' | inline_asset_content -}}
+          </span>
+        </span>
+      </div>
     </div>
   </div>
 {% endif %}

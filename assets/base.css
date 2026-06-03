@@ -3598,75 +3598,215 @@ details-disclosure > details {
 
 
 
-/* Free shipping bar Start*/
+/* Free shipping bar */
 .free-shipping-bar {
-  padding: 14px 16px;
-  margin: 12px 0;
-  border-radius: 10px;
-  background: #f7f7f7;
+  --free-shipping-progress: 0%;
+  --free-shipping-accent: #e87924;
+  --free-shipping-accent-strong: #c84f12;
+  --free-shipping-success: #168347;
+  --free-shipping-track: #eadfce;
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.2rem;
+  align-items: center;
+  padding: 1.4rem;
+  margin: 1.2rem 0;
+  border: 0.1rem solid rgba(200, 79, 18, 0.18);
+  border-radius: 0.8rem;
+  background:
+    linear-gradient(135deg, rgba(255, 247, 237, 0.96), rgba(255, 255, 255, 0.96)),
+    rgb(var(--color-background));
+  box-shadow: 0 0.8rem 2.4rem rgba(31, 41, 55, 0.08);
+  overflow: hidden;
+  position: relative;
 }
 
-.free-shipping-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.free-shipping-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.55) 45%, transparent 70%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+.free-shipping-bar.is-complete {
+  --free-shipping-accent: var(--free-shipping-success);
+  --free-shipping-accent-strong: #116f3b;
+  --free-shipping-track: #d8efdf;
+
+  border-color: rgba(22, 131, 71, 0.24);
+  background:
+    linear-gradient(135deg, rgba(240, 253, 244, 0.98), rgba(255, 255, 255, 0.98)),
+    rgb(var(--color-background));
+}
+
+.free-shipping-bar.is-complete::before {
+  animation: freeShippingSweep 1.2s ease-out 1;
+}
+
+.free-shipping-icon {
+  width: 4rem;
+  height: 4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--free-shipping-accent-strong);
+  background: rgba(232, 121, 36, 0.12);
+  flex: none;
+}
+
+.free-shipping-bar.is-complete .free-shipping-icon {
+  color: var(--free-shipping-success);
+  background: rgba(22, 131, 71, 0.12);
+}
+
+.free-shipping-icon .svg-wrapper,
+.free-shipping-marker .svg-wrapper {
+  width: 2rem;
+  height: 2rem;
+}
+
+.free-shipping-icon__check,
+.free-shipping-bar.is-complete .free-shipping-icon__truck {
+  display: none;
+}
+
+.free-shipping-bar.is-complete .free-shipping-icon__check {
+  display: inline-flex;
+}
+
+.free-shipping-content {
+  min-width: 0;
+}
+
+.free-shipping-message,
+.free-shipping-detail {
+  margin: 0;
 }
 
 .free-shipping-message {
-  margin: 0 0 10px;
-  font-size: 14px;
+  color: rgb(var(--color-foreground));
+  font-size: 1.4rem;
   font-weight: 600;
+  line-height: 1.35;
+}
+
+.free-shipping-emphasis {
+  color: var(--free-shipping-accent-strong);
+}
+
+.free-shipping-detail {
+  margin-top: 0.2rem;
+  color: rgba(var(--color-foreground), 0.72);
+  font-size: 1.2rem;
+  line-height: 1.35;
 }
 
 .free-shipping-track {
+  position: relative;
   width: 100%;
-  height: 10px;
-  background: #e2e2e2;
-  border-radius: 30px;
-  overflow: hidden;
+  height: 1rem;
+  margin-top: 1.2rem;
+  border-radius: 999rem;
+  background: var(--free-shipping-track);
 }
 
 .free-shipping-progress {
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, #ff9800, #ffc107);
-  border-radius: 30px;
-  transition: width 0.6s ease-in-out, background 0.4s ease;
-  position: relative;
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--free-shipping-progress);
+  min-width: 1rem;
+  max-width: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--free-shipping-accent-strong), #f5b544);
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+  overflow: hidden;
+}
+
+.free-shipping-bar.is-complete .free-shipping-progress {
+  background: linear-gradient(90deg, #168347, #35bd69);
 }
 
 .free-shipping-progress::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.45),
-    transparent
-  );
-  animation: shippingBarShine 1.5s infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.48), transparent);
+  transform: translateX(-100%);
+  animation: freeShippingShine 1.8s ease-in-out infinite;
 }
 
-.free-shipping-progress.is-complete {
-  background: linear-gradient(90deg, #16a34a, #22c55e);
-  animation: completePulse 1s ease-in-out infinite alternate;
+.free-shipping-marker {
+  position: absolute;
+  top: 50%;
+  left: clamp(1.4rem, var(--free-shipping-progress), calc(100% - 1.4rem));
+  width: 2.8rem;
+  height: 2.8rem;
+  display: grid;
+  place-items: center;
+  border: 0.2rem solid rgb(var(--color-background));
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--free-shipping-accent-strong);
+  box-shadow: 0 0.4rem 1.2rem rgba(31, 41, 55, 0.18);
+  transform: translate(-50%, -50%);
+  transition: left 0.7s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
 }
 
-@keyframes shippingBarShine {
-  from {
-    transform: translateX(-100%);
-  }
+.free-shipping-bar.is-complete .free-shipping-marker {
+  background: var(--free-shipping-success);
+  animation: freeShippingComplete 0.7s ease-out 1;
+}
+
+@keyframes freeShippingShine {
   to {
     transform: translateX(100%);
   }
 }
 
-@keyframes completePulse {
-  from {
-    box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
-  }
+@keyframes freeShippingSweep {
   to {
-    box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+    transform: translateX(120%);
+  }
+}
+
+@keyframes freeShippingComplete {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  45% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .free-shipping-bar {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .free-shipping-icon {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .free-shipping-bar::before,
+  .free-shipping-progress::after,
+  .free-shipping-bar.is-complete .free-shipping-marker {
+    animation: none;
+  }
+
+  .free-shipping-progress,
+  .free-shipping-marker {
+    transition: none;
   }
 }

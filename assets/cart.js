@@ -299,55 +299,121 @@ if (!customElements.get('cart-note')) {
 
 // Custom Cart feature scripts start here
 
-function updateFreeShippingBar() {
-  fetch('/cart.js')
-    .then(response => response.json())
-    .then(cart => {
-      const bars = document.querySelectorAll('.free-shipping-bar');
+// Converts Shopify cart cents into a customer-friendly currency string.
+function formatFreeShippingMoney(cents, currency) {
+  // Shopify stores money in cents, so divide by 100 for display.
+  const amount = cents / 100;
 
-      bars.forEach(bar => {
-        if (cart.item_count === 0) {
-          bar.style.display = 'none';
-          return;
-        }
+  // Use the cart currency when available so the message matches the store market.
+  if (currency) {
+    try {
+      // Intl formats the amount using the visitor's language and selected currency.
+      return new Intl.NumberFormat(document.documentElement.lang || 'en', {
+        style: 'currency',
+        currency,
+      }).format(amount);
+    } catch (error) {
+      // If the browser cannot format the currency, log it and use the fallback below.
+      console.warn(error);
+    }
+  }
 
-        bar.style.display = 'block';
-
-        const threshold = Number(bar.dataset.freeShippingThreshold);
-        const cartTotal = cart.total_price;
-        const amountLeft = threshold - cartTotal;
-        const progress = Math.min((cartTotal / threshold) * 100, 100);
-
-        const message = bar.querySelector('.free-shipping-message');
-        const progressBar = bar.querySelector('.free-shipping-progress');
-
-        progressBar.style.width = `${progress}%`;
-
-        if (amountLeft > 0) {
-          message.textContent = `Add $${(amountLeft / 100).toFixed(2)} more for FREE shipping`;
-          progressBar.classList.remove('is-complete');
-        } else {
-          message.textContent = '🎉 You unlocked FREE shipping!';
-          progressBar.classList.add('is-complete');
-        }
-      });
-    });
+  // Fallback format keeps the message readable if currency formatting fails.
+  return `$${amount.toFixed(2)}`;
 }
 
-document.addEventListener('DOMContentLoaded', updateFreeShippingBar);
+// Updates every free shipping bar on the page using the latest cart data.
+function renderFreeShippingBars(cart) {
+  // Find both cart drawer and cart page bars if both exist in the DOM.
+  const bars = document.querySelectorAll('.free-shipping-bar');
+  // Stop early when there is no bar or no cart data to render.
+  if (!bars.length || !cart) return;
 
-document.addEventListener('cart:updated', updateFreeShippingBar);
+  // Loop through each bar so drawer and cart page stay in sync.
+  bars.forEach((bar) => {
+    // Hide the bar when the cart is empty.
+    if (cart.item_count === 0) {
+      bar.hidden = true;
+      return;
+    }
 
-const cartObserver = new MutationObserver(() => {
-  updateFreeShippingBar();
-});
+    // Read the free shipping target from the Liquid data attribute.
+    const threshold = Number(bar.dataset.freeShippingThreshold);
+    // Stop if the threshold is missing or invalid.
+    if (!threshold) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const cartDrawer = document.querySelector('cart-drawer');
-  if (cartDrawer) {
-    cartObserver.observe(cartDrawer, {
-      childList: true,
-      subtree: true
-    });
+    // Normalize the cart total so calculations work even if the API sends an empty value.
+    const cartTotal = Number(cart.total_price || 0);
+    // Calculate how much more the customer needs to spend for free shipping.
+    const amountLeft = threshold - cartTotal;
+    // Convert cart progress into a percentage and cap it at 100.
+    const progress = Math.min((cartTotal / threshold) * 100, 100);
+    // Track whether the customer has already reached the free shipping target.
+    const isComplete = amountLeft <= 0;
+    // Prefer live cart currency, then fall back to the Liquid-rendered currency.
+    const currency = cart.currency || bar.dataset.freeShippingCurrency;
+    // Get the message element that shows the main free shipping text.
+    const message = bar.querySelector('.free-shipping-message');
+    // Get the smaller supporting text under the main message.
+    const detail = bar.querySelector('.free-shipping-detail');
+    // Get the progressbar element so its accessible value can be updated.
+    const track = bar.querySelector('.free-shipping-track');
+
+    // Show the bar again when the cart has items.
+    bar.hidden = false;
+    // Toggle the complete class to switch colors, icon, and animation.
+    bar.classList.toggle('is-complete', isComplete);
+    // Update the CSS variable that controls the fill width and truck marker position.
+    bar.style.setProperty('--free-shipping-progress', `${progress}%`);
+
+    // Keep the progressbar aria value accurate for screen readers.
+    if (track) track.setAttribute('aria-valuenow', Math.round(progress));
+
+    // Update the main message based on whether free shipping is unlocked.
+    if (message) {
+      if (isComplete) {
+        // Show the success copy after the threshold is reached.
+        message.innerHTML = '<span class="free-shipping-emphasis">Free shipping unlocked</span> for this order';
+      } else {
+        // Format the remaining amount before adding it to the message.
+        const amount = formatFreeShippingMoney(amountLeft, currency);
+        // Show how much more the customer needs to spend.
+        message.innerHTML = `<span class="free-shipping-emphasis">You're ${amount} away</span> from free shipping`;
+      }
+    }
+
+    // Update the smaller helper text for incomplete and complete states.
+    if (detail) {
+      detail.textContent = isComplete
+        ? 'Your order is ready to ship on us.'
+        : 'Add one more favorite and we will cover delivery.';
+    }
+  });
+}
+
+// Receives cart data from events, or fetches it once when the page first loads.
+function updateFreeShippingBar(cartData) {
+  // Use existing cart event data when available to avoid an extra network request.
+  if (cartData && typeof cartData.total_price === 'number') {
+    renderFreeShippingBars(cartData);
+    return;
   }
-});
+
+  // On first page load, fetch the current cart so the bar starts accurate.
+  fetch(`${routes.cart_url}.js`)
+    // Convert the Shopify cart response into JSON.
+    .then((response) => response.json())
+    // Render the bar using the fetched cart data.
+    .then(renderFreeShippingBars)
+    // Log fetch errors without breaking the cart experience.
+    .catch((error) => console.warn(error));
+}
+
+// Initialize the bar after the page HTML is ready.
+document.addEventListener('DOMContentLoaded', () => updateFreeShippingBar());
+
+// Listen to Dawn's cart update event so the bar changes after add/remove/quantity updates.
+if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
+  // Re-render using the cart data passed by the event.
+  subscribe(PUB_SUB_EVENTS.cartUpdate, (event) => updateFreeShippingBar(event?.cartData));
+}
