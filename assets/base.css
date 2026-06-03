@@ -3810,3 +3810,6 @@ details-disclosure > details {
     transition: none;
   }
 }
+.free-shipping-marker svg {
+    stroke: #ffffff;
+}
