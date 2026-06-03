@@ -191,6 +191,10 @@ class CartItems extends HTMLElement {
               section.selector
             );
           });
+
+          // Update custom cart banners immediately after Shopify returns the new cart state.
+          updateFreeShippingBar(parsedState);
+
           const updatedValue = parsedState.items[line - 1] ? parsedState.items[line - 1].quantity : undefined;
           let message = '';
           if (items.length === parsedState.items.length && updatedValue !== parseInt(quantityElement.value)) {
@@ -334,6 +338,7 @@ function renderFreeShippingBars(cart) {
     // Hide the bar when the cart is empty.
     if (cart.item_count === 0) {
       bar.hidden = true;
+      bar.style.display = 'none';
       return;
     }
 
@@ -361,6 +366,7 @@ function renderFreeShippingBars(cart) {
 
     // Show the bar again when the cart has items.
     bar.hidden = false;
+    bar.style.removeProperty('display');
     // Toggle the complete class to switch colors, icon, and animation.
     bar.classList.toggle('is-complete', isComplete);
     // Update the CSS variable that controls the fill width and truck marker position.
