@@ -1,23 +1,28 @@
-{% assign free_shipping_threshold = 5000 %}
+{% assign free_shipping_threshold = 10000 %}
 {% assign cart_total = cart.total_price %}
 {% assign amount_left = free_shipping_threshold | minus: cart_total %}
+{% assign progress = cart_total | times: 100 | divided_by: free_shipping_threshold | at_most: 100 %}
 
-<div
-  class="free-shipping-bar"
-  data-free-shipping-threshold="{{ free_shipping_threshold }}"
->
-  <p class="free-shipping-message">
-    {% if amount_left > 0 %}
-      Spend {{ amount_left | money }} more to get FREE shipping!
-    {% else %}
-      Congratulations! You unlocked FREE shipping.
-    {% endif %}
-  </p>
+{% if cart.item_count > 0 %}
+  <div
+    class="free-shipping-bar"
+    data-free-shipping-threshold="{{ free_shipping_threshold }}"
+  >
+    <div class="free-shipping-top">
+      <p class="free-shipping-message">
+        {% if amount_left > 0 %}
+          Add {{ amount_left | money }} more for FREE shipping
+        {% else %}
+          🎉 You unlocked FREE shipping!
+        {% endif %}
+      </p>
+    </div>
 
-  <div class="free-shipping-track">
-    <div
-      class="free-shipping-progress"
-      style="width: {{ cart_total | times: 100 | divided_by: free_shipping_threshold | at_most: 100 }}%;"
-    ></div>
+    <div class="free-shipping-track">
+      <div
+        class="free-shipping-progress {% if amount_left <= 0 %}is-complete{% endif %}"
+        style="width: {{ progress }}%;"
+      ></div>
+    </div>
   </div>
-</div>
+{% endif %}

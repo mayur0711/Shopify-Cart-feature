@@ -300,14 +300,19 @@ if (!customElements.get('cart-note')) {
 // Custom Cart feature scripts start here
 
 function updateFreeShippingBar() {
-  const bars = document.querySelectorAll('.free-shipping-bar');
-
-  if (!bars.length) return;
-
-  fetch(`${routes.cart_url}.js`)
+  fetch('/cart.js')
     .then(response => response.json())
     .then(cart => {
+      const bars = document.querySelectorAll('.free-shipping-bar');
+
       bars.forEach(bar => {
+        if (cart.item_count === 0) {
+          bar.style.display = 'none';
+          return;
+        }
+
+        bar.style.display = 'block';
+
         const threshold = Number(bar.dataset.freeShippingThreshold);
         const cartTotal = cart.total_price;
         const amountLeft = threshold - cartTotal;
@@ -316,16 +321,33 @@ function updateFreeShippingBar() {
         const message = bar.querySelector('.free-shipping-message');
         const progressBar = bar.querySelector('.free-shipping-progress');
 
-        if (amountLeft > 0) {
-          message.textContent = `Spend ${Shopify.formatMoney(amountLeft)} more to get FREE shipping!`;
-        } else {
-          message.textContent = 'Congratulations! You unlocked FREE shipping.';
-        }
-
         progressBar.style.width = `${progress}%`;
+
+        if (amountLeft > 0) {
+          message.textContent = `Add $${(amountLeft / 100).toFixed(2)} more for FREE shipping`;
+          progressBar.classList.remove('is-complete');
+        } else {
+          message.textContent = '🎉 You unlocked FREE shipping!';
+          progressBar.classList.add('is-complete');
+        }
       });
     });
 }
 
 document.addEventListener('DOMContentLoaded', updateFreeShippingBar);
+
 document.addEventListener('cart:updated', updateFreeShippingBar);
+
+const cartObserver = new MutationObserver(() => {
+  updateFreeShippingBar();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const cartDrawer = document.querySelector('cart-drawer');
+  if (cartDrawer) {
+    cartObserver.observe(cartDrawer, {
+      childList: true,
+      subtree: true
+    });
+  }
+});
