@@ -174,9 +174,7 @@
                           {%- else -%}
                             <div class="product-option">
                               
-                              <s class="cart-item__old-price product-option">
-                                {{- item.original_price | money -}}
-                              </s>
+                              
                               
                               {{ item.original_price | money }}
                             </div>
@@ -260,9 +258,7 @@
                               </div>
                             {%- else -%}
                               <span class="price price--end">
-                                <s class="cart-item__old-price product-option">
-                                {{- item.original_price | money -}}
-                              </s>
+                                
                                 {{ item.original_line_price | money }}
                               </span>
                             {%- endif -%}
