@@ -1,3 +1,5 @@
+ {% if settings.show_cart_saving %}
+
 {% assign total_savings = 0 %}
 
 {% for item in cart.items %}
@@ -14,4 +16,5 @@
       You saved {{ total_savings | money }} on this order
     </span>
   </div>
+{% endif %}
 {% endif %}
