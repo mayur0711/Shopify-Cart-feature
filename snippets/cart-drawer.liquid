@@ -29,7 +29,7 @@
     >
       {%- if cart == empty -%}
         <div class="drawer__inner-empty">
-          <div class="cart-drawer__warnings center{% if settings.cart_drawer_collection != blank %} cart-drawer__warnings--has-collection{% endif %}">
+          <div class="cart-drawer__warnings center{% if settings.cart_drawer_collection != blank or settings.cart_drawer_products != blank %} cart-drawer__warnings--has-collection{% endif %}">
             <div class="cart-drawer__empty-content">
               <h2 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h2>
               <button
@@ -54,7 +54,38 @@
               {%- endif -%}
             </div>
           </div>
-          {%- if settings.cart_drawer_collection != blank -%}
+          {%- if settings.cart_drawer_products != blank -%}
+            <div class="cart-drawer__recommendations">
+              <p class="cart-drawer__recommendations-title">Recommended products</p>
+              <div class="cart-drawer__recommendations-list">
+                {%- for recommended_product in settings.cart_drawer_products -%}
+                  <a href="{{ recommended_product.url }}" class="cart-drawer__recommendation">
+                    <span class="cart-drawer__recommendation-media">
+                      {%- if recommended_product.featured_media -%}
+                        {{
+                          recommended_product.featured_media
+                          | image_url: width: 160
+                          | image_tag:
+                            loading: 'lazy',
+                            widths: '80, 120, 160',
+                            sizes: '72px',
+                            alt: recommended_product.featured_media.alt
+                        }}
+                      {%- else -%}
+                        {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      {%- endif -%}
+                    </span>
+                    <span class="cart-drawer__recommendation-content">
+                      <span class="cart-drawer__recommendation-title">{{ recommended_product.title | escape }}</span>
+                      <span class="cart-drawer__recommendation-price">
+                        {% render 'price', product: recommended_product, price_class: 'cart-drawer__recommendation-price-value' %}
+                      </span>
+                    </span>
+                  </a>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- elsif settings.cart_drawer_collection != blank -%}
             <div class="cart-drawer__collection">
               {% render 'card-collection', card_collection: settings.cart_drawer_collection, columns: 1 %}
             </div>
