@@ -203,16 +203,17 @@ cart-drawer {
 }
 
 .cart-drawer__recommendations-slide {
-  width: 13.2rem;
-  max-width: 13.2rem;
+  width: 26rem;
+  max-width: 26rem;
 }
 
 .cart-drawer__recommendation {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  padding: 0.8rem;
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.9rem;
   border: 0.1rem solid rgba(var(--color-foreground), 0.12);
   border-radius: 0.8rem;
   color: rgb(var(--color-foreground));
@@ -228,7 +229,7 @@ cart-drawer {
 
 .cart-drawer__recommendation-media {
   display: block;
-  width: 100%;
+  width: 8rem;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 0.6rem;
@@ -253,7 +254,7 @@ cart-drawer {
   color: rgb(var(--color-foreground));
   display: -webkit-box;
   overflow: hidden;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 600;
   line-height: 1.3;
   -webkit-box-orient: vertical;
