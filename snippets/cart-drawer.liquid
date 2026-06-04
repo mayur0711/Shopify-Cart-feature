@@ -7,6 +7,7 @@
 
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
 <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
@@ -55,35 +56,80 @@
             </div>
           </div>
           {%- if settings.cart_drawer_products != blank -%}
+            {%- assign cart_drawer_products_count = settings.cart_drawer_products.size -%}
             <div class="cart-drawer__recommendations">
               <p class="cart-drawer__recommendations-title">Recommended products</p>
-              <div class="cart-drawer__recommendations-list">
-                {%- for recommended_product in settings.cart_drawer_products -%}
-                  <a href="{{ recommended_product.url }}" class="cart-drawer__recommendation">
-                    <span class="cart-drawer__recommendation-media">
-                      {%- if recommended_product.featured_media -%}
-                        {{
-                          recommended_product.featured_media
-                          | image_url: width: 160
-                          | image_tag:
-                            loading: 'lazy',
-                            widths: '80, 120, 160',
-                            sizes: '72px',
-                            alt: recommended_product.featured_media.alt
-                        }}
-                      {%- else -%}
-                        {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
-                      {%- endif -%}
-                    </span>
-                    <span class="cart-drawer__recommendation-content">
-                      <span class="cart-drawer__recommendation-title">{{ recommended_product.title | escape }}</span>
-                      <span class="cart-drawer__recommendation-price">
-                        {% render 'price', product: recommended_product, price_class: 'cart-drawer__recommendation-price-value' %}
+              <slider-component class="cart-drawer__recommendations-slider">
+                <ul
+                  id="Slider-CartDrawerRecommendations"
+                  class="cart-drawer__recommendations-list slider slider--everywhere list-unstyled"
+                  role="list"
+                >
+                  {%- for recommended_product in settings.cart_drawer_products -%}
+                    <li
+                      id="Slide-CartDrawerRecommendations-{{ forloop.index }}"
+                      class="cart-drawer__recommendations-slide slider__slide"
+                    >
+                      <a href="{{ recommended_product.url }}" class="cart-drawer__recommendation">
+                        <span class="cart-drawer__recommendation-media">
+                          {%- if recommended_product.featured_media -%}
+                            {{
+                              recommended_product.featured_media
+                              | image_url: width: 240
+                              | image_tag:
+                                loading: 'lazy',
+                                widths: '120, 180, 240',
+                                sizes: '132px',
+                                alt: recommended_product.featured_media.alt
+                            }}
+                          {%- else -%}
+                            {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                          {%- endif -%}
+                        </span>
+                        <span class="cart-drawer__recommendation-content">
+                          <span class="cart-drawer__recommendation-title">{{ recommended_product.title | escape }}</span>
+                          <span class="cart-drawer__recommendation-price">
+                            {% render 'price', product: recommended_product, price_class: 'cart-drawer__recommendation-price-value' %}
+                          </span>
+                        </span>
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+
+                {%- if cart_drawer_products_count > 1 -%}
+                  <div class="cart-drawer__recommendations-controls slider-buttons">
+                    <button
+                      type="button"
+                      class="slider-button slider-button--prev"
+                      name="previous"
+                      aria-label="{{ 'general.slider.previous_slide' | t }}"
+                      aria-controls="Slider-CartDrawerRecommendations"
+                    >
+                      <span class="svg-wrapper">
+                        {{- 'icon-caret.svg' | inline_asset_content -}}
                       </span>
-                    </span>
-                  </a>
-                {%- endfor -%}
-              </div>
+                    </button>
+                    <div class="slider-counter caption">
+                      <span class="slider-counter--current">1</span>
+                      <span aria-hidden="true"> / </span>
+                      <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+                      <span class="slider-counter--total">{{ cart_drawer_products_count }}</span>
+                    </div>
+                    <button
+                      type="button"
+                      class="slider-button slider-button--next"
+                      name="next"
+                      aria-label="{{ 'general.slider.next_slide' | t }}"
+                      aria-controls="Slider-CartDrawerRecommendations"
+                    >
+                      <span class="svg-wrapper">
+                        {{- 'icon-caret.svg' | inline_asset_content -}}
+                      </span>
+                    </button>
+                  </div>
+                {%- endif -%}
+              </slider-component>
             </div>
           {%- elsif settings.cart_drawer_collection != blank -%}
             <div class="cart-drawer__collection">
