@@ -116,7 +116,7 @@ cart-drawer:not(.is-empty) .cart-drawer__recommendations {
   right: 1.2rem;
   min-width: 3.8rem;
   min-height: 3.8rem;
-  border: 0.1rem solid rgba(var(--color-foreground), 0.14);
+  /* border: 0.1rem solid rgba(var(--color-foreground), 0.14); */
   background: rgb(var(--color-background));
 }
 
