@@ -126,6 +126,9 @@
     "show_cart_note": true,
     "show_cart_saving": true,
     "free_shipping_threshold": 150,
+    "eligible_discount_code_3": "freeship",
+    "eligible_discount_minimum_3": 50,
+    "eligible_discount_description_3": "Free Shipping",
     "cart_drawer_collection": "",
     "cart_drawer_products": [
       "selling-plans-ski-wax",
