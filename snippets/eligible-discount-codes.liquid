@@ -1,5 +1,5 @@
 {% if settings.show_eligible_discount_codes and cart.item_count > 0 %}
-  {% capture eligible_discount_codes %}
+  {% capture discount_codes %}
     {% for discount_index in (1..5) %}
       {% liquid
         assign code_key = 'eligible_discount_code_' | append: discount_index
@@ -8,41 +8,66 @@
         assign discount_code = settings[code_key] | strip
         assign discount_minimum = settings[minimum_key] | default: 0 | times: 100 | round
         assign discount_description = settings[description_key] | strip
+        assign amount_left = discount_minimum | minus: cart.total_price
+        assign is_active = false
+
+        if discount_minimum > 0 and cart.total_price >= discount_minimum
+          assign is_active = true
+        endif
       %}
 
-      {% if discount_code != blank and discount_minimum > 0 and cart.total_price >= discount_minimum %}
-        <li class="eligible-discounts__item">
-          <button
-            class="eligible-discounts__code"
-            type="button"
-            data-discount-code="{{ discount_code | escape }}"
-            aria-label="Copy discount code {{ discount_code | escape }}"
-          >
-            {{ discount_code | escape }}
-          </button>
+      {% if discount_code != blank and discount_minimum > 0 %}
+        <li class="eligible-discounts__item{% if is_active %} is-active{% else %} is-locked{% endif %}">
+          {% if is_active %}
+            <button
+              class="eligible-discounts__code"
+              type="button"
+              data-discount-code="{{ discount_code | escape }}"
+              aria-label="Copy discount code {{ discount_code | escape }}"
+            >
+              {{ discount_code | escape }}
+            </button>
+          {% else %}
+            <span
+              class="eligible-discounts__code eligible-discounts__code--locked"
+              aria-label="Discount code {{ discount_code | escape }} unlocks at {{ discount_minimum | money }}"
+            >
+              {{ discount_code | escape }}
+            </span>
+          {% endif %}
+
           <span class="eligible-discounts__meta">
-            {% if discount_description != blank %}
-              {{ discount_description | escape }}
-            {% else %}
-              Eligible at {{ discount_minimum | money }}
-            {% endif %}
+            <span class="eligible-discounts__description">
+              {% if discount_description != blank %}
+                {{ discount_description | escape }}
+              {% else %}
+                Unlocks at {{ discount_minimum | money }}
+              {% endif %}
+            </span>
+            <span class="eligible-discounts__status">
+              {% if is_active %}
+                Active now. Click to copy.
+              {% else %}
+                Add {{ amount_left | money }} more to activate.
+              {% endif %}
+            </span>
           </span>
         </li>
       {% endif %}
     {% endfor %}
   {% endcapture %}
   {% liquid
-    assign eligible_discount_codes = eligible_discount_codes | strip
+    assign discount_codes = discount_codes | strip
   %}
 
-  {% if eligible_discount_codes != blank %}
+  {% if discount_codes != blank %}
     <div class="eligible-discounts" aria-live="polite">
-      <p class="eligible-discounts__eyebrow">Unlocked coupon</p>
-      <p class="eligible-discounts__title">You qualify for these codes</p>
+      <p class="eligible-discounts__eyebrow">Coupon codes</p>
+      <p class="eligible-discounts__title">Available offers for your cart</p>
       <ul class="eligible-discounts__list list-unstyled" role="list">
-        {{ eligible_discount_codes }}
+        {{ discount_codes }}
       </ul>
-      <p class="eligible-discounts__hint">Click a code to copy it, then paste it at checkout.</p>
+      <p class="eligible-discounts__hint">Active codes can be copied and used at checkout.</p>
     </div>
   {% endif %}
 {% endif %}

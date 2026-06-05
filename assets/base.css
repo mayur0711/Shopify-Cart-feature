@@ -3862,6 +3862,19 @@ details-disclosure > details {
   grid-template-columns: minmax(9rem, auto) 1fr;
   gap: 0.8rem;
   align-items: center;
+  padding: 0.8rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.eligible-discounts__item.is-active {
+  border-color: rgba(22, 131, 71, 0.28);
+  background: rgba(240, 253, 244, 0.82);
+}
+
+.eligible-discounts__item.is-locked {
+  opacity: 0.74;
 }
 
 .eligible-discounts__code {
@@ -3882,8 +3895,17 @@ details-disclosure > details {
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
-.eligible-discounts__code:hover,
-.eligible-discounts__code:focus-visible,
+.eligible-discounts__code--locked {
+  display: inline-grid;
+  place-items: center;
+  border-style: solid;
+  border-color: rgba(var(--color-foreground), 0.18);
+  color: rgba(var(--color-foreground), 0.52);
+  cursor: default;
+}
+
+.eligible-discounts__code:not(.eligible-discounts__code--locked):hover,
+.eligible-discounts__code:not(.eligible-discounts__code--locked):focus-visible,
 .eligible-discounts__code.is-copied {
   border-color: #c84f12;
   background: #fff7ed;
@@ -3891,9 +3913,25 @@ details-disclosure > details {
 }
 
 .eligible-discounts__meta {
+  display: grid;
+  gap: 0.2rem;
   color: rgba(var(--color-foreground), 0.72);
   font-size: 1.2rem;
   line-height: 1.35;
+}
+
+.eligible-discounts__description {
+  color: rgba(var(--color-foreground), 0.78);
+}
+
+.eligible-discounts__status {
+  color: rgba(var(--color-foreground), 0.58);
+  font-size: 1.1rem;
+}
+
+.eligible-discounts__item.is-active .eligible-discounts__status {
+  color: #168347;
+  font-weight: 600;
 }
 
 .eligible-discounts__hint {
