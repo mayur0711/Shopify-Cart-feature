@@ -133,10 +133,6 @@ Copies active coupon codes to the clipboard using the HTML5 `navigator.clipboard
 ## 👨‍💻 Developer & Author
 
 *   **Mayur Saraiya**
-*   *Founder – WhiteBird Solution*
-*   **Website / Portfolio:** [whitebirdsolution.com](https://whitebirdsolution.com)
-*   **GitHub:** [@mayur0711](https://github.com/mayur0711)
-
 ---
 
 ## ⭐ Support & License
