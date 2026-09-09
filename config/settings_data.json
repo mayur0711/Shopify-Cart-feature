@@ -126,6 +126,7 @@
     "show_cart_note": true,
     "show_cart_saving": false,
     "free_shipping_threshold": 150,
+    "show_eligible_discount_codes": false,
     "eligible_discount_code_3": "freeship",
     "eligible_discount_minimum_3": 50,
     "eligible_discount_description_3": "Free Shipping",
